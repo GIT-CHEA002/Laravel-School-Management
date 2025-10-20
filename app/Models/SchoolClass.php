@@ -17,19 +17,19 @@ class SchoolClass extends Model
 
     public function students()
     {
-        return $this->belongsToMany(Student::class, 'enrollments');
+        return $this->belongsToMany(Student::class, 'enrollments', 'class_id', 'student_id');
     }
 
     public function subjects()
     {
-        return $this->belongsToMany(Subject::class, 'class_subject_teacher')
+        return $this->belongsToMany(Subject::class, 'class_subject_teacher', 'school_class_id', 'subject_id')
             ->withPivot('teacher_id')
             ->withTimestamps();
     }
 
     public function teachers()
     {
-        return $this->belongsToMany(Teacher::class, 'class_subject_teacher')
+        return $this->belongsToMany(Teacher::class, 'class_subject_teacher', 'school_class_id', 'teacher_id')
             ->withPivot('subject_id')
             ->withTimestamps();
     }

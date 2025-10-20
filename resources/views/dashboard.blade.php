@@ -1,66 +1,130 @@
 @extends("navbar")
 @section("content")
-    <div class="top-navbar">
-        <div class="search-box">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search...">
-                <button class="btn btn-outline-secondary" type="button"><i class="fas fa-search"></i></button>
-            </div>
+<div class="top-navbar">
+    <div class="d-flex align-items-center">
+        <div class="school-logo me-3">
+            <img src="{{ url('photo/photo1.jpg') }}" alt="School Logo" width="40" height="40" class="rounded-circle">
         </div>
-        <div class="user-actions">
-            <button class="btn btn-light me-2"><i class="fas fa-bell"></i></button>
-            <div class="dropdown">
-                <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                    <i class="fas fa-user-circle me-1"></i> Admin User
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
-                </ul>
-            </div>
+        <div>
+            <h4 class="mb-0 text-dark">Education Management System</h4>
+            <small class="text-muted">Dashboard Overview</small>
         </div>
     </div>
+    
+    <div class="d-flex align-items-center">
+        <!-- Notifications -->
+        <div class="notification-icon me-3">
+            <button class="btn btn-light position-relative">
+                <i class="fas fa-bell"></i>
+                @if(isset($noticesCount) && $noticesCount > 0)
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ $noticesCount }}
+                        <span class="visually-hidden">new notices</span>
+                    </span>
+                @endif
+            </button>
+        </div>
+        
+        <!-- Profile Icon -->
+        @auth
+            <div class="dropdown">
+                <button class="btn btn-light dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                    <div class="user-avatar me-2">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="text-start">
+                        <div class="fw-bold">{{ Auth::user()->name }}</div>
+                        <small class="text-muted">{{ ucfirst(Auth::user()->role) }}</small>
+                    </div>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="fas fa-user-cog me-2"></i>Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                            @csrf
+                            <button type="submit" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        @endauth
+    </div>
+</div>
 
     <!-- Content Area -->
     <div class="content-area">
-        <!-- Dashboard Header -->
-        <div class="dashboard-header">
-            <h1>Dashboard</h1>
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <a href="{{ route('admin.students.index') }}" style="text-decoration: none;">
+                    <div class="stats-card">
+                        <div class="stats-icon" style="background-color: rgba(76, 201, 240, 0.2); color: #4cc9f0;">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stats-number">{{ $totalStudents ?? 0 }}</div>
+                        <div class="stats-label">Students</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <a href="{{ route('admin.teachers.index') }}" style="text-decoration: none;">
+                    <div class="stats-card">
+                        <div class="stats-icon" style="background-color: rgba(247, 37, 133, 0.2); color: #f72585;">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div class="stats-number">{{ $totalTeachers ?? 0 }}</div>
+                        <div class="stats-label">Teachers</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <a href="{{ route('admin.classes.index') }}" style="text-decoration: none;">
+                    <div class="stats-card">
+                        <div class="stats-icon" style="background-color: rgba(72, 149, 239, 0.2); color: #4895ef;">
+                            <i class="fas fa-school"></i>
+                        </div>
+                        <div class="stats-number">{{ $totalClasses ?? 0 }}</div>
+                        <div class="stats-label">Classes</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <a href="{{ route('admin.exams.index') }}" style="text-decoration: none;">
+                    <div class="stats-card">
+                        <div class="stats-icon" style="background-color: rgba(114, 201, 114, 0.2); color: #72c972;">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stats-number">{{ $examsToday ?? 0 }}</div>
+                        <div class="stats-label">Exams Today</div>
+                    </div>
+                </a>
+            </div>
         </div>
 
-        <!-- Stats Cards -->
-        <div class="row">
-            <div class="col-md-4">
+        <!-- Quick Stats Row -->
+        <div class="row mb-4">
+            <div class="col-md-6 mb-3">
                 <div class="stats-card">
-                    <div class="stats-icon" style="background-color: rgba(76, 201, 240, 0.2); color: #4cc9f0;">
-                        <i class="fas fa-user-graduate"></i>
+                    <div class="stats-icon" style="background-color: rgba(255, 193, 7, 0.2); color: #ffc107;">
+                        <i class="fas fa-bullhorn"></i>
                     </div>
-                    <div class="stats-number">{{ $totalStudents ?? 0}}</div>
-                    <div class="stats-label">Students</div>
+                    <div class="stats-number">{{ $noticesCount ?? 0 }}</div>
+                    <div class="stats-label">Active Notices</div>
                 </div>
             </div>
-
-            <div class="col-md-4">
+            <div class="col-md-6 mb-3">
                 <div class="stats-card">
-                    <div class="stats-icon" style="background-color: rgba(247, 37, 133, 0.2); color: #f72585;">
-                        <i class="fas fa-chalkboard-teacher"></i>
+                    <div class="stats-icon" style="background-color: rgba(40, 167, 69, 0.2); color: #28a745;">
+                        <i class="fas fa-user-plus"></i>
                     </div>
-                    <div class="stats-number">{{ $totalTeachers ??0 }}</div>
-                    <div class="stats-label">Teachers</div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="stats-card">
-                    <div class="stats-icon" style="background-color: rgba(72, 149, 239, 0.2); color: #4895ef;">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                    <div class="stats-number">{{ $totalClasses ?? 0}}</div>
-                    <div class="stats-label">Classes</div>
+                    <div class="stats-number">{{ $recentStudents ?? 0 }}</div>
+                    <div class="stats-label">New Students (7 days)</div>
                 </div>
             </div>
         </div>
@@ -68,60 +132,70 @@
         <!-- Student Stats -->
         <div class="student-stats">
             <div class="student-stats-header">
-                <h4 class="section-title">Students</h4>
-                <div class="dropdown">
-                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
-                        data-bs-toggle="dropdown">
-                        Grade 7 <i class="fas fa-caret-down"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Grade 7</a></li>
-                        <li><a class="dropdown-item" href="#">Grade 8</a></li>
-                        <li><a class="dropdown-item" href="#">Grade 9</a></li>
-                        <li><a class="dropdown-item" href="#">Grade 10</a></li>
-                    </ul>
-                </div>
+                <h4 class="section-title"><i class="fas fa-chart-line me-2"></i>Student Statistics</h4>
+                <form method="GET" action="{{ route('admin.dashboard') }}" class="d-inline">
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown">
+                            {{ $selectedClass ? $selectedClass->class_name : 'Select Class' }} <i class="fas fa-caret-down"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">All Classes</a></li>
+                            @foreach($classes ?? [] as $class)
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('admin.dashboard', ['class_id' => $class->id]) }}">
+                                        {{ $class->class_name }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </form>
             </div>
 
             <div class="student-details">
-    <div class="student-detail-card">
-        <h5>Total</h5>
-        <div class="number">{{ $totalStudents }}</div>
-    </div>
+                <div class="student-detail-card">
+                    <h5>Total {{ $selectedClass ? 'in ' . $selectedClass->class_name : '' }}</h5>
+                    <div class="number">{{ $selectedClass ? $studentsInClass : $totalStudents }}</div>
+                </div>
 
-    <div class="student-detail-card">
-        <i class="fas fa-female text-danger fs-1"></i>
-        <h5>Female</h5>
-        <div class="number">{{ $femaleStudents ?? 234 }}</div>
-    </div>
+                <div class="student-detail-card">
+                    <i class="fas fa-female text-danger fs-1"></i>
+                    <h5>Female</h5>
+                    <div class="number">{{ $selectedClass ? $femaleInClass : $femaleStudents }}</div>
+                </div>
 
-    <div class="student-detail-card">
-        <i class="fas fa-male text-info fs-1"></i>
-        <h5>Male</h5>
-        <div class="number">{{ $maleStudents ?? 193 }}</div>
-    </div>
-</div>
+                <div class="student-detail-card">
+                    <i class="fas fa-male text-info fs-1"></i>
+                    <h5>Male</h5>
+                    <div class="number">{{ $selectedClass ? $maleInClass : $maleStudents }}</div>
+                </div>
+            </div>
 
             <div class="attendance-section">
-                <h5>Attendance</h5>
+                <h5><i class="fas fa-calendar-check me-2"></i>Today's Attendance</h5>
                 <div class="attendance-bars">
                     <div class="attendance-bar">
                         <div class="attendance-label">
-                            <span>Present</span>
-                            <span>70%</span>
+                            <span>Present ({{ $presentCount }})</span>
+                            <span>{{ $presentPercentage }}%</span>
                         </div>
                         <div class="progress">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: 70%" aria-valuenow="70"
+                            <div class="progress-bar bg-info" role="progressbar"
+                                style="width: {{ $presentPercentage }}%"
+                                aria-valuenow="{{ $presentPercentage }}"
                                 aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                     <div class="attendance-bar">
                         <div class="attendance-label">
-                            <span>Absent</span>
-                            <span>30%</span>
+                            <span>Absent ({{ $absentCount }})</span>
+                            <span>{{ $absentPercentage }}%</span>
                         </div>
                         <div class="progress">
-                            <div class="progress-bar bg-danger" role="progressbar" style="width: 30%" aria-valuenow="30"
+                            <div class="progress-bar bg-danger" role="progressbar"
+                                style="width: {{ $absentPercentage }}%"
+                                aria-valuenow="{{ $absentPercentage }}"
                                 aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
@@ -129,23 +203,60 @@
             </div>
         </div>
 
-        <!-- Awards Section -->
-        <div class="awards-section">
-            <div class="awards-header">
-                <h4 class="section-title">Student Activities</h4>
+        <div class="row mt-4">
+            <!-- Recent Notices -->
+            <div class="col-md-6 mb-4">
+                <div class="awards-section">
+                    <div class="awards-header">
+                        <h4 class="section-title"><i class="fas fa-sticky-note me-2"></i>Recent Notices</h4>
+                        <a href="{{ route('admin.notices.create') }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-plus me-1"></i>Add Notice
+                        </a>
+                    </div>
+                    <div class="awards-list">
+                        @forelse($recentNotices ?? [] as $notice)
+                            <div class="award-item">
+                                <div class="award-title">{{ $notice->title }}</div>
+                                <div class="award-description">
+                                    {{ Str::limit($notice->content, 100) }}
+                                    <br><small class="text-muted">By {{ $notice->creator->name }} • {{ $notice->created_at->diffForHumans() }}</small>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="text-center py-3">
+                                <p class="text-muted">No notices found.</p>
+                                <a href="{{ route('admin.notices.create') }}" class="btn btn-outline-primary btn-sm">Create First Notice</a>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
             </div>
-            <div class="awards-list">
-                <div class="award-item">
-                    <div class="award-title">Best in Show at Statewide Art Contest</div>
-                    <div class="award-description">Aiden Kim created a stunning, mixed-media landscape piece.</div>
-                </div>
-                <div class="award-item">
-                    <div class="award-title">Gold Medal in National Math Olympiad</div>
-                    <div class="award-description">Ethan Wong solved complex problems with outstanding skills.</div>
-                </div>
-                <div class="award-item">
-                    <div class="award-title">First Place in Regional Science Fair</div>
-                    <div class="award-description">Sophia Martinez presented innovative renewable energy solution.</div>
+
+            <!-- Enrollment Chart -->
+            <div class="col-md-6 mb-4">
+                <div class="awards-section">
+                    <div class="awards-header">
+                        <h4 class="section-title"><i class="fas fa-chart-bar me-2"></i>Enrollment by Class</h4>
+                    </div>
+                    <div class="chart-container" style="height: 250px; padding: 20px;">
+                        @if(!empty($enrollmentData))
+                            <div style="display: flex; align-items: flex-end; justify-content: space-around; height: 200px;">
+                                @foreach($enrollmentData as $data)
+                                    <div style="display: flex; flex-direction: column; align-items: center; flex: 1;">
+                                        <div style="width: 50px; background-color: #4cc9f0; height: {{ max(20, ($data['student_count'] * 10)) }}px; margin-bottom: 10px; border-radius: 4px 4px 0 0;"
+                                             title="{{ $data['class_name'] }}">
+                                        </div>
+                                        <small style="font-size: 11px; color: #6c757d; transform: rotate(-45deg);">{{ $data['class_name'] }}</small>
+                                        <small style="font-size: 10px; color: #6c757d; margin-top: 5px;">{{ $data['student_count'] }}</small>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="text-center py-4">
+                                <p class="text-muted">No enrollment data available.</p>
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -153,30 +264,39 @@
         <!-- Attendance Chart -->
         <div class="attendance-chart">
             <div class="attendance-chart-header">
-                <h4 class="section-title">Attendance</h4>
-                <div class="dropdown">
-                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
-                        data-bs-toggle="dropdown">
-                        Weekly <i class="fas fa-caret-down"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Daily</a></li>
-                        <li><a class="dropdown-item" href="#">Weekly</a></li>
-                        <li><a class="dropdown-item" href="#">Monthly</a></li>
-                    </ul>
-                </div>
+                <h4 class="section-title"><i class="fas fa-chart-area me-2"></i>Attendance Trends</h4>
+                <form method="GET" action="{{ route('admin.dashboard') }}" class="d-inline">
+                    @if(request('class_id'))
+                        <input type="hidden" name="class_id" value="{{ request('class_id') }}">
+                    @endif
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown">
+                            {{ ucfirst($period) }} <i class="fas fa-caret-down"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('admin.dashboard', array_merge(request()->query(), ['period' => 'daily'])) }}">Daily</a></li>
+                            <li><a class="dropdown-item" href="{{ route('admin.dashboard', array_merge(request()->query(), ['period' => 'weekly'])) }}">Weekly</a></li>
+                            <li><a class="dropdown-item" href="{{ route('admin.dashboard', array_merge(request()->query(), ['period' => 'monthly'])) }}">Monthly</a></li>
+                        </ul>
+                    </div>
+                </form>
             </div>
             <div class="chart-container">
-                <!-- This would be replaced with a real chart in production -->
-                <div
-                    style="height: 100%; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 20px;">
-                    <div style="width: 40px; background-color: #4cc9f0; height: 70%; margin-right: 5px;"></div>
-                    <div style="width: 40px; background-color: #f72585; height: 30%; margin-right: 5px;"></div>
-                    <div style="width: 40px; background-color: #4cc9f0; height: 80%; margin-right: 5px;"></div>
-                    <div style="width: 40px; background-color: #f72585; height: 20%; margin-right: 5px;"></div>
-                    <div style="width: 40px; background-color: #4cc9f0; height: 90%; margin-right: 5px;"></div>
-                    <div style="width: 40px; background-color: #f72585; height: 10%; margin-right: 5px;"></div>
-                    <div style="width: 40px; background-color: #4cc9f0; height: 85%; margin-right: 5px;"></div>
+                <div style="height: 200px; display: flex; align-items: flex-end; justify-content: space-between; padding: 20px;">
+                    @foreach($chartData ?? [] as $data)
+                        <div style="display: flex; flex-direction: column; align-items: center; flex: 1;">
+                            <div style="display: flex; flex-direction: column; align-items: flex-end; height: 160px; justify-content: flex-end;">
+                                @if($data['present'] > 0 || $data['absent'] > 0)
+                                    <div style="width: 40px; background-color: #4cc9f0; height: {{ max(10, $data['present_percentage'] * 1.5) }}px; margin-bottom: 2px; border-radius: 2px 2px 0 0;" title="Present: {{ $data['present'] }}"></div>
+                                    <div style="width: 40px; background-color: #f72585; height: {{ max(5, $data['absent_percentage'] * 1.5) }}px; margin-bottom: 5px; border-radius: 0 0 2px 2px;" title="Absent: {{ $data['absent'] }}"></div>
+                                @else
+                                    <div style="width: 40px; height: 10px; margin-bottom: 5px; background-color: #e9ecef; border-radius: 2px;" title="No data"></div>
+                                @endif
+                            </div>
+                            <small style="font-size: 11px; color: #6c757d; margin-top: 5px;">{{ $data['date'] }}</small>
+                        </div>
+                    @endforeach
                 </div>
             </div>
             <div class="attendance-legend">
@@ -191,4 +311,6 @@
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 @endsection

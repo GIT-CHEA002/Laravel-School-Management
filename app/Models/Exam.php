@@ -10,16 +10,17 @@ class Exam extends Model
     use HasFactory;
 
     protected $fillable = [
-        'school_class_id',
+        'exam_name',
         'subject_id',
-        'name',
-        'date',
-        'total_marks',
+        'class_id',
+        'exam_date',
+        'max_score',
+        'description',
     ];
 
     public function schoolClass()
     {
-        return $this->belongsTo(SchoolClass::class);
+        return $this->belongsTo(SchoolClass::class, 'class_id');
     }
 
     public function subject()

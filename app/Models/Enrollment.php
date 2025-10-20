@@ -11,8 +11,12 @@ class Enrollment extends Model
 
     protected $fillable = [
         'student_id',
-        'school_class_id',
-        'enrolled_at',
+        'class_id',
+        'enrollment_date',
+    ];
+
+    protected $casts = [
+        'enrollment_date' => 'date',
     ];
 
     public function student()
@@ -22,6 +26,6 @@ class Enrollment extends Model
 
     public function schoolClass()
     {
-        return $this->belongsTo(SchoolClass::class);
+        return $this->belongsTo(SchoolClass::class, 'class_id');
     }
 }

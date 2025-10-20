@@ -47,7 +47,7 @@
         }
 
         .sidebar-menu {
-            padding: 15px 0;
+            padding: 15px 0 120px 0; /* Add bottom padding for footer */
         }
 
         .sidebar-menu ul {
@@ -67,12 +67,32 @@
             align-items: center;
             padding: 12px 20px;
             transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
         }
 
-        .sidebar-menu a:hover, .sidebar-menu a.active {
+        .sidebar-menu a:hover, .sidebar-menu a.active, .sidebar-menu .nav-link.active {
             background-color: rgba(255, 255, 255, 0.1);
             color: white;
             border-left: 4px solid var(--success);
+        }
+
+        .sidebar-menu a:active {
+            transform: translateY(1px);
+        }
+
+        /* Ensure active state is properly styled */
+        .sidebar-menu .nav-link.active,
+        .sidebar-menu a.active {
+            background-color: rgba(255, 255, 255, 0.15) !important;
+            color: white !important;
+            border-left: 4px solid var(--success) !important;
+        }
+
+        /* Prevent button from getting stuck in active state */
+        .sidebar-menu a:focus {
+            outline: none;
+            box-shadow: none;
         }
 
         .sidebar-menu i {
@@ -93,6 +113,81 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .school-logo img {
+            border: 2px solid #f8f9fa;
+        }
+
+        .notification-icon .btn {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-avatar i {
+            font-size: 28px;
+            color: var(--primary);
+        }
+
+        /* Table styling improvements */
+        .table th {
+            background-color: #f8f9fa;
+            border-top: none;
+            font-weight: 600;
+            color: #495057;
+            font-size: 14px;
+            padding: 12px 15px;
+        }
+
+        .table td {
+            padding: 12px 15px;
+            vertical-align: middle;
+            border-top: 1px solid #f1f3f4;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(67, 97, 238, 0.04);
+        }
+
+        /* Avatar circle for student/teacher lists */
+        .avatar-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .stats-badge {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        /* Button consistency */
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
         }
 
         .content-area {
@@ -384,6 +479,187 @@ nav .hidden {
     color: #4361ee;
 }
 
+        /* Sidebar Footer - User Authentication Section */
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 15px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        /* User Profile Section */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .user-avatar {
+            margin-right: 12px;
+            font-size: 32px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .user-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: white;
+            font-size: 14px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            font-size: 12px;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            gap: 4px;
+        }
+
+        .role-admin {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #ff6b6b;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        .role-teacher {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .role-student {
+            background-color: rgba(13, 202, 240, 0.2);
+            color: #0dcaf0;
+            border: 1px solid rgba(13, 202, 240, 0.3);
+        }
+
+        .user-actions {
+            margin-left: 10px;
+        }
+
+        .btn-logout {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #ff6b6b;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 36px;
+        }
+
+        .btn-logout:hover {
+            background: rgba(220, 53, 69, 0.3);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Login Section */
+        .login-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .login-content {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .login-icon {
+            margin-right: 12px;
+            font-size: 28px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .login-text {
+            flex: 1;
+        }
+
+        .login-title {
+            font-weight: 600;
+            color: white;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .login-subtitle {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .login-actions {
+            margin-left: 10px;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, #218838, #1ea080);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar-footer {
+                padding: 10px 15px;
+            }
+            
+            .user-name, .login-title {
+                font-size: 12px;
+            }
+            
+            .btn-login {
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+}
+
     </style>
 </head>
 <body>
@@ -395,32 +671,136 @@ nav .hidden {
             </div>
             <div class="sidebar-menu">
                 <ul>
-                    <li><a href="{{ route('dashboard') }}" class="active"><i class="fas fa-tachometer-alt"></i> <span class="menu-text">Dashboard</span></a></li>
-                    <li><a href="{{ route('admin.students.index') }}"><i class="fas fa-users"></i> <span class="menu-text">Students</span></a></li>
-                    <li><a href="{{ route('admin.teachers.index') }}"><i class="fas fa-chalkboard-teacher"></i> <span class="menu-text">Teachers</span></a></li>
-                    <li><a href="{{ route('admin.users.index') }}"><i class="fas fa-user-tie"></i> <span class="menu-text">Users</span></a></li>
-                    <li><a href="{{ route('admin.classes.index') }}"><i class="fas fa-calendar-alt"></i> <span class="menu-text">Classes</span></a></li>
-                    <li><a href="#"><i class="fas fa-clipboard-list"></i> <span class="menu-text">Exam</span></a></li>
-                    <li><a href="#"><i class="fas fa-bullhorn"></i> <span class="menu-text">Notice</span></a></li>
+                    <!-- 1️⃣ Main Dashboard Page -->
+                    <li><a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') || request()->routeIs('dashboard') ? 'active' : '' }}"><i class="fas fa-tachometer-alt"></i> <span class="menu-text">Dashboard</span></a></li>
+                    
+                    <!-- 2️⃣ Students Module -->
+                    <li><a href="{{ route('admin.students.index') }}" class="nav-link {{ request()->routeIs('admin.students.*') ? 'active' : '' }}"><i class="fas fa-users"></i> <span class="menu-text">Students</span></a></li>
+                    
+                    <!-- 3️⃣ Teachers Module -->
+                    <li><a href="{{ route('admin.teachers.index') }}" class="nav-link {{ request()->routeIs('admin.teachers.*') ? 'active' : '' }}"><i class="fas fa-chalkboard-teacher"></i> <span class="menu-text">Teachers</span></a></li>
+                    
+                    <!-- 4️⃣ Classes Module -->
+                    <li><a href="{{ route('admin.classes.index') }}" class="nav-link {{ request()->routeIs('admin.classes.*') ? 'active' : '' }}"><i class="fas fa-school"></i> <span class="menu-text">Classes</span></a></li>
+                    
+                    <!-- 5️⃣ Exams Module -->
+                    <li><a href="{{ route('admin.exams.index') }}" class="nav-link {{ request()->routeIs('admin.exams.*') ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> <span class="menu-text">Exams</span></a></li>
+                    
+                    <!-- 6️⃣ Notices Module -->
+                    <li><a href="{{ route('admin.notices.index') }}" class="nav-link {{ request()->routeIs('admin.notices.*') ? 'active' : '' }}"><i class="fas fa-bullhorn"></i> <span class="menu-text">Notices</span></a></li>
+                    
+                    <!-- 7️⃣ Users & Roles -->
+                    <li><a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"><i class="fas fa-user-tie"></i> <span class="menu-text">Users</span></a></li>
+                    
+                    <!-- Optional: Profile Page -->
+                    <li><a href="{{ route('profile.edit') }}" class="nav-link {{ request()->routeIs('profile.*') ? 'active' : '' }}"><i class="fas fa-user-cog"></i> <span class="menu-text">Profile</span></a></li>
+                    
+                    <!-- Additional: Subjects -->
+                    <li><a href="{{ route('admin.subjects.index') }}" class="nav-link {{ request()->routeIs('admin.subjects.*') ? 'active' : '' }}"><i class="fas fa-book"></i> <span class="menu-text">Subjects</span></a></li>
                 </ul>
             </div>
+
+            <!-- User Authentication Section -->
+            @auth
+                <!-- User Profile Section -->
+                <div class="sidebar-footer">
+                    <div class="user-profile">
+                        <div class="user-info">
+                            <div class="user-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="user-details">
+                                <div class="user-name">{{ Auth::user()->name }}</div>
+                                <div class="user-role">
+                                    <span class="role-badge role-{{ Auth::user()->role }}">
+                                        <i class="fas fa-user-{{ Auth::user()->role === 'admin' ? 'shield' : (Auth::user()->role === 'teacher' ? 'chalkboard-teacher' : 'graduation-cap') }}"></i>
+                                        {{ ucfirst(Auth::user()->role) }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="user-actions">
+                            <form method="POST" action="{{ route('logout') }}" class="d-inline" onsubmit="return confirmLogout()">
+                                @csrf
+                                <button type="submit" class="btn-logout" title="Logout">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <!-- Login Section -->
+                <div class="sidebar-footer">
+                    <div class="login-section">
+                        <div class="login-content">
+                            <div class="login-icon">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </div>
+                            <div class="login-text">
+                                <div class="login-title">Admin Login</div>
+                                <div class="login-subtitle">Access the dashboard</div>
+                            </div>
+                        </div>
+                        <div class="login-actions">
+                            <a href="{{ route('login') }}" class="btn-login">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @endauth
         </div>
 
 
         <!-- Main Content -->
         <div class="main-content">
-            @yield("content");
+            @yield("content")
 
 
         </div>
     </div>
 
     <script>
-        // Simple script to handle sidebar toggle on mobile
         document.addEventListener('DOMContentLoaded', function() {
-            // This would be replaced with actual functionality in a real application
-            console.log('Dashboard loaded');
+            // Simple navigation link handling
+            const navLinks = document.querySelectorAll('.sidebar-menu a');
+            
+            // Clean up any stuck active states on navigation
+            navLinks.forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    // Allow the navigation to proceed
+                    // The server-side routeIs() will handle the active state
+                });
+                
+                // Remove focus after click to prevent stuck appearance
+                link.addEventListener('mouseup', function() {
+                    this.blur();
+                });
+            });
+            
+            // Mobile responsiveness
+            function handleMobileSidebar() {
+                if (window.innerWidth <= 768) {
+                    // Mobile styles are handled by CSS media queries
+                    console.log('Mobile view');
+                } else {
+                    // Desktop view
+                    console.log('Desktop view');
+                }
+            }
+            
+            handleMobileSidebar();
+            window.addEventListener('resize', handleMobileSidebar);
         });
+
+        // Logout confirmation function
+        function confirmLogout() {
+            const userRole = '{{ Auth::check() ? Auth::user()->role : "user" }}';
+            const userName = '{{ Auth::check() ? Auth::user()->name : "User" }}';
+            
+            return confirm(`Are you sure you want to logout, ${userName}?\n\nYou are currently logged in as ${userRole}.`);
+        }
     </script>
 </body>
 </html>

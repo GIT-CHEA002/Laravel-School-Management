@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Teacher;
 use App\Models\User;
+use App\Models\Subject;
 use Illuminate\Http\Request;
 
 class TeacherController extends Controller
@@ -12,11 +13,36 @@ class TeacherController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $teachers = Teacher::with('user')->paginate(10);
+        $query = Teacher::with(['user', 'subjects', 'classes']);
 
-        return view('admin.teachers.index', compact('teachers'));
+        // Search functionality
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->whereHas('user', function($userQuery) use ($searchTerm) {
+                    $userQuery->where('name', 'like', "%{$searchTerm}%")
+                             ->orWhere('email', 'like', "%{$searchTerm}%");
+                })
+                ->orWhere('first_name', 'like', "%{$searchTerm}%")
+                ->orWhere('last_name', 'like', "%{$searchTerm}%")
+                ->orWhere('specialization', 'like', "%{$searchTerm}%")
+                ->orWhere('phone', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        // Filter by subject if provided
+        if ($request->filled('subject_id')) {
+            $query->whereHas('subjects', function($q) use ($request) {
+                $q->where('subjects.id', $request->subject_id);
+            });
+        }
+
+        $teachers = $query->paginate(10);
+        $subjects = Subject::all();
+
+        return view('admin.teachers.index', compact('teachers', 'subjects'));
     }
 
     /**
@@ -60,7 +86,7 @@ class TeacherController extends Controller
      */
     public function show(Teacher $teacher)
     {
-        $teacher->load('user');
+        $teacher->load(['user', 'subjects', 'classes']);
 
         return view('admin.teachers.show', compact('teacher'));
     }
@@ -80,13 +106,30 @@ class TeacherController extends Controller
      */
     public function update(Request $request, Teacher $teacher)
     {
-        $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'nullable|string|max:255',
-            'specialization' => 'nullable|string|max:255',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $teacher->user->id,
             'phone' => 'nullable|string|max:20',
-            'adress' => 'nullable|string|max:500',
+            'address' => 'nullable|string|max:500',
+            'date_of_birth' => 'nullable|date',
+            'gender' => 'nullable|in:male,female,other',
         ]);
+
+        // Update the user information
+        $teacher->user->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'date_of_birth' => $validated['date_of_birth'],
+            'gender' => $validated['gender'],
+        ]);
+
+        // Update the teacher information
+        $teacher->update([
+            'phone' => $validated['phone'],
+            'address' => $validated['address'],
+        ]);
+
+        return redirect()->route('admin.teachers.index')->with('success', 'Teacher updated successfully.');
     }
 
     /**
@@ -94,6 +137,12 @@ class TeacherController extends Controller
      */
     public function destroy(Teacher $teacher)
     {
-        //
+        // Delete the associated user
+        $teacher->user->delete();
+        
+        // The teacher will be deleted automatically due to cascade delete or we can delete it explicitly
+        $teacher->delete();
+
+        return redirect()->route('admin.teachers.index')->with('success', 'Teacher deleted successfully.');
     }
 }

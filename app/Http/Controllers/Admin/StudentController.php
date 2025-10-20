@@ -17,7 +17,7 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Student::with('user');
+        $query = Student::with(['user', 'classes']);
 
         // Search functionality
         if ($request->filled('search')) {
@@ -60,6 +60,7 @@ class StudentController extends Controller
             'dob' => 'nullable|date',
             'address' => 'nullable|string|max:500',
             'phone' => 'nullable|string|max:20',
+            'photo_url' => 'nullable|url',
             'parent_name' => 'nullable|string|max:255',
             'parent_phone' => 'nullable|string|max:20',
         ]);
@@ -83,6 +84,7 @@ class StudentController extends Controller
                 'dob' => $request->dob,
                 'address' => $request->address,
                 'phone' => $request->phone,
+                'photo_url' => $request->photo_url,
                 'parent_name' => $request->parent_name,
                 'parent_phone' => $request->parent_phone,
             ]);

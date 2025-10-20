@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\EnrollmentController as AdminEnrollmentController
 use App\Http\Controllers\Admin\ExamController as AdminExamController;
 use App\Http\Controllers\Admin\FeeController as AdminFeeController;
 use App\Http\Controllers\Admin\GradeController as AdminGradeController;
+use App\Http\Controllers\Admin\NoticeController as AdminNoticeController;
 use App\Http\Controllers\Admin\SchoolClassController as AdminSchoolClassController;
 use App\Http\Controllers\Admin\StudentController as AdminStudentController;
 use App\Http\Controllers\Admin\SubjectController as AdminSubjectController;
@@ -33,13 +34,7 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::get('/', function () {
-    $totalStudents = Student::count();
-    $totalTeachers = Teacher::count();
-    $totalClasses = SchoolClass::count();
-
-    return view('dashboard', compact('totalStudents', 'totalTeachers', 'totalClasses'));
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/', [AdminDashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -62,7 +57,16 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         'exams' => AdminExamController::class,
         'grades' => AdminGradeController::class,
         'fees' => AdminFeeController::class,
+        'notices' => AdminNoticeController::class,
     ]);
+    
+    // Custom routes for class subject assignment
+    Route::get('classes/{schoolClass}/assign-subjects', [AdminSchoolClassController::class, 'assignSubjects'])->name('classes.assign-subjects');
+    Route::post('classes/{schoolClass}/assign-subjects', [AdminSchoolClassController::class, 'storeSubjects'])->name('classes.store-subjects');
+    
+    // Custom routes for exam results
+    Route::get('exams/{exam}/results', [AdminExamController::class, 'showResults'])->name('exams.results');
+    Route::post('exams/{exam}/results', [AdminExamController::class, 'storeResults'])->name('exams.store-results');
 });
 
 // Teacher Panel

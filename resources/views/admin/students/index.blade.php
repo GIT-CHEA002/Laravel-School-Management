@@ -42,25 +42,32 @@
             <table class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>#</th>
+                        <th>ID</th>
                         <th>Name</th>
-                        <th>Email</th>
-                        <th>Registration #</th>
                         <th>Gender</th>
+                        <th>Age</th>
+                        <th>Class</th>
                         <th>Phone</th>
-                        <th>Created</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($students as $student)
                         <tr>
-                            <td>{{ $student->id }}</td>
+                            <td class="fw-bold">{{ $student->id }}</td>
                             <td>
-                                <strong>{{ $student->first_name }} {{ $student->last_name }}</strong>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-circle me-2">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div>
+                                        <strong>{{ $student->first_name }} {{ $student->last_name }}</strong>
+                                        @if($student->user && $student->user->email)
+                                            <br><small class="text-muted">{{ $student->user->email }}</small>
+                                        @endif
+                                    </div>
+                                </div>
                             </td>
-                            <td>{{ $student->user->email ?? 'N/A' }}</td>
-                            <td>{{ $student->registration_number ?? $student->student_code }}</td>
                             <td>
                                 @if($student->gender)
                                     <span class="badge bg-{{ $student->gender === 'male' ? 'primary' : ($student->gender === 'female' ? 'danger' : 'secondary') }}">
@@ -70,20 +77,51 @@
                                     <span class="text-muted">Not set</span>
                                 @endif
                             </td>
-                            <td>{{ $student->phone ?? 'Not set' }}</td>
-                            <td>{{ $student->created_at->format('M d, Y') }}</td>
+                            <td>
+                                @if($student->age)
+                                    <span class="badge bg-info">{{ $student->age }} years</span>
+                                @else
+                                    <span class="text-muted">Not set</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($student->classes->count() > 0)
+                                    @foreach($student->classes as $class)
+                                        <span class="badge bg-info me-1">{{ $class->class_name }}</span>
+                                    @endforeach
+                                @else
+                                    <span class="text-muted">No class assigned</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($student->phone)
+                                    <a href="tel:{{ $student->phone }}" class="text-decoration-none">
+                                        <i class="fas fa-phone me-1"></i>{{ $student->phone }}
+                                    </a>
+                                @else
+                                    <span class="text-muted">Not set</span>
+                                @endif
+                            </td>
                             <td class="text-center">
-                                <a href="{{ route('admin.students.show', $student) }}" class="btn btn-sm btn-info me-1">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                <a href="{{ route('admin.students.edit', $student) }}" class="btn btn-sm btn-warning">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ route('admin.students.show', $student) }}" class="btn btn-sm btn-outline-primary" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ route('admin.students.edit', $student) }}" class="btn btn-sm btn-outline-warning" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Delete" onclick="confirmDelete({{ $student->id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center text-muted py-4">No students found.</td>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                <i class="fas fa-users fa-2x mb-3 d-block"></i>
+                                No students found.
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>

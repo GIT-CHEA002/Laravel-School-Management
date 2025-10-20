@@ -56,7 +56,13 @@
                                     </tr>
                                     <tr>
                                         <td><strong>Date of Birth:</strong></td>
-                                        <td>{{ $student->date_of_birth ? $student->date_of_birth->format('M d, Y') : 'Not set' }}</td>
+                                        <td>
+                                            @if($student->dob)
+                                                {{ $student->dob->format('M d, Y') }}
+                                            @else
+                                                Not set
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><strong>Gender:</strong></td>
@@ -124,7 +130,13 @@
                                             @foreach($student->enrollments as $enrollment)
                                                 <tr>
                                                     <td>{{ $enrollment->schoolClass->name ?? 'Not set' }} {{ $enrollment->schoolClass->section ?? 'Not set' }}</td>
-                                                    <td>{{ $enrollment->enrolled_at ? $enrollment->enrolled_at->format('M d, Y') : 'Not set' }}</td>
+                                                    <td>
+                                                        @if($enrollment->enrollment_date)
+                                                            {{ $enrollment->enrollment_date->format('M d, Y') }}
+                                                        @else
+                                                            Not set
+                                                        @endif
+                                                    </td>
                                                     <td><span class="badge bg-success">Active</span></td>
                                                 </tr>
                                             @endforeach
@@ -163,7 +175,13 @@
                                                             {{ ucfirst($fee->status) }}
                                                         </span>
                                                     </td>
-                                                    <td>{{ $fee->due_date ? $fee->due_date->format('M d, Y') : 'Not set' }}</td>
+                                                    <td>
+                                                        @if($fee->due_date)
+                                                            {{ \Carbon\Carbon::parse($fee->due_date)->format('M d, Y') }}
+                                                        @else
+                                                            Not set
+                                                        @endif
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>

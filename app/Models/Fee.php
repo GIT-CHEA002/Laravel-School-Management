@@ -17,6 +17,10 @@ class Fee extends Model
         'due_date',
     ];
 
+    protected $casts = [
+        'due_date' => 'date',
+    ];
+
     public function student()
     {
         return $this->belongsTo(Student::class);

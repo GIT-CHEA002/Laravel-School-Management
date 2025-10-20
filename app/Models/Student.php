@@ -18,9 +18,20 @@ class Student extends Model
         'dob',
         'address',
         'phone',
+        'photo_url',
         'parent_name',
         'parent_phone',
     ];
+
+    protected $casts = [
+        'dob' => 'date',
+    ];
+
+    // Accessor for age calculation
+    public function getAgeAttribute()
+    {
+        return $this->dob ? $this->dob->age : null;
+    }
 
     public function user()
     {
@@ -34,7 +45,7 @@ class Student extends Model
 
     public function classes()
     {
-        return $this->belongsToMany(SchoolClass::class, 'enrollments');
+        return $this->belongsToMany(SchoolClass::class, 'enrollments', 'student_id', 'class_id');
     }
 
     public function attendances()
@@ -45,5 +56,10 @@ class Student extends Model
     public function fees()
     {
         return $this->hasMany(Fee::class);
+    }
+
+    public function grades()
+    {
+        return $this->hasMany(Grade::class);
     }
 }

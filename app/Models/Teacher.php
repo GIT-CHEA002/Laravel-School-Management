@@ -11,9 +11,13 @@ class Teacher extends Model
 
     protected $fillable = [
         'user_id',
-        'employee_number',
         'phone',
+        'photo_url',
         'address',
+        'first_name',
+        'last_name',
+        'specialization',
+        'hire_date',
     ];
 
     public function user()

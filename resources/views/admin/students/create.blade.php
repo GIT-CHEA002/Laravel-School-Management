@@ -182,6 +182,21 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <!-- Photo URL -->
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="photo_url" class="form-label">Photo URL</label>
+                                <input type="url" class="form-control @error('photo_url') is-invalid @enderror"
+                                       id="photo_url" name="photo_url" value="{{ old('photo_url') }}"
+                                       placeholder="https://example.com/photo.jpg">
+                                @error('photo_url')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">Create Student</button>
                         <a href="{{ route('admin.students.index') }}" class="btn btn-secondary">Cancel</a>
