@@ -1,12 +1,6 @@
 @extends('navbar')
 
 @section('content')
-<div class="top-navbar">
-    <div class="dashboard-header">
-        <h1>Subject Management</h1>
-    </div>
-</div>
-
 <div class="content-area">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3>All Subjects</h3>
@@ -40,10 +34,10 @@
             <form method="GET" action="{{ route('admin.subjects.index') }}" class="row g-3">
                 <div class="col-md-8">
                     <label for="search" class="form-label">Search Subjects</label>
-                    <input type="text" 
-                           name="search" 
+                    <input type="text"
+                           name="search"
                            id="search"
-                           class="form-control" 
+                           class="form-control"
                            placeholder="Search by name or code..."
                            value="{{ request('search') }}">
                 </div>
@@ -139,27 +133,27 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="btn-group" role="group">
-                                        <a href="{{ route('admin.subjects.show', $subject) }}" 
-                                           class="btn btn-sm btn-outline-info" 
-                                           data-bs-toggle="tooltip" 
+                                        <a href="{{ route('admin.subjects.show', $subject) }}"
+                                           class="btn btn-sm btn-outline-info"
+                                           data-bs-toggle="tooltip"
                                            title="View Details">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('admin.subjects.edit', $subject) }}" 
-                                           class="btn btn-sm btn-outline-warning" 
-                                           data-bs-toggle="tooltip" 
+                                        <a href="{{ route('admin.subjects.edit', $subject) }}"
+                                           class="btn btn-sm btn-outline-warning"
+                                           data-bs-toggle="tooltip"
                                            title="Edit Subject">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <form action="{{ route('admin.subjects.destroy', $subject) }}" 
-                                              method="POST" 
+                                        <form action="{{ route('admin.subjects.destroy', $subject) }}"
+                                              method="POST"
                                               class="d-inline"
                                               onsubmit="return confirm('Are you sure you want to delete this subject?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" 
-                                                    class="btn btn-sm btn-outline-danger" 
-                                                    data-bs-toggle="tooltip" 
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    data-bs-toggle="tooltip"
                                                     title="Delete Subject">
                                                 <i class="fas fa-trash"></i>
                                             </button>
@@ -185,7 +179,7 @@
                 </table>
             </div>
         </div>
-        
+
         <!-- Pagination -->
         @if($subjects->hasPages())
             <div class="card-footer">

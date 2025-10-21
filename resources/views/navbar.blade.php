@@ -660,6 +660,19 @@ nav .hidden {
             }
 }
 
+        /* Dropdown active state styling */
+        .dropdown-item.active,
+        .dropdown-item:active {
+            background-color: #4361ee;
+            color: white;
+        }
+        
+        .dropdown-item.active:hover,
+        .dropdown-item:active:hover {
+            background-color: #3651d1;
+            color: white;
+        }
+
     </style>
 </head>
 <body>
@@ -685,6 +698,9 @@ nav .hidden {
                     
                     <!-- 5️⃣ Exams Module -->
                     <li><a href="{{ route('admin.exams.index') }}" class="nav-link {{ request()->routeIs('admin.exams.*') ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> <span class="menu-text">Exams</span></a></li>
+                    
+                    <!-- 5.5️⃣ Grades Module -->
+                    <li><a href="{{ route('admin.grades.index') }}" class="nav-link {{ request()->routeIs('admin.grades.*') ? 'active' : '' }}"><i class="fas fa-chart-bar"></i> <span class="menu-text">Grades</span></a></li>
                     
                     <!-- 6️⃣ Notices Module -->
                     <li><a href="{{ route('admin.notices.index') }}" class="nav-link {{ request()->routeIs('admin.notices.*') ? 'active' : '' }}"><i class="fas fa-bullhorn"></i> <span class="menu-text">Notices</span></a></li>

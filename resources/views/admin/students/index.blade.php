@@ -16,7 +16,17 @@
         </div>
 
         @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+            <div class="alert alert-success alert-dismissible fade show">
+                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show">
+                <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
         @endif
 
         <!-- Search Form -->
@@ -133,4 +143,102 @@
         </div>
     </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                    Confirm Delete
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this student? This action cannot be undone and will also delete the associated user account.</p>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <strong>Warning:</strong> Deleting a student will permanently remove all their data including enrollments, attendance, and grades.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i>Delete Student
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmDelete(studentId) {
+    try {
+        // Find the student row to get the student name for confirmation
+        const deleteButton = document.querySelector(`button[onclick*="confirmDelete(${studentId})"]`);
+        if (!deleteButton) {
+            console.error('Delete button not found for student ID:', studentId);
+            return;
+        }
+        
+        const studentRow = deleteButton.closest('tr');
+        if (!studentRow) {
+            console.error('Student row not found');
+            return;
+        }
+        
+        const nameElement = studentRow.querySelector('strong');
+        const studentName = nameElement ? nameElement.textContent.trim() : 'this student';
+        
+        // Update the modal content with the specific student name
+        const modalBody = document.querySelector('#deleteModal .modal-body p');
+        if (modalBody) {
+            modalBody.innerHTML = `Are you sure you want to delete <strong>${studentName}</strong>? This action cannot be undone and will also delete the associated user account.`;
+        }
+        
+        // Set the form action to the correct delete route
+        const deleteForm = document.getElementById('deleteForm');
+        if (deleteForm) {
+            deleteForm.action = `{{ url('/admin/students') }}/${studentId}`;
+        }
+        
+        // Show the modal
+        const deleteModalElement = document.getElementById('deleteModal');
+        if (deleteModalElement && typeof bootstrap !== 'undefined') {
+            const deleteModal = new bootstrap.Modal(deleteModalElement);
+            deleteModal.show();
+        } else {
+            console.error('Bootstrap modal not available');
+        }
+    } catch (error) {
+        console.error('Error in confirmDelete function:', error);
+        // Fallback: still try to set the form action and show modal
+        const deleteForm = document.getElementById('deleteForm');
+        if (deleteForm) {
+            deleteForm.action = `{{ url('/admin/students') }}/${studentId}`;
+        }
+    }
+}
+
+// Handle form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteForm = document.getElementById('deleteForm');
+    if (deleteForm) {
+        deleteForm.addEventListener('submit', function(e) {
+            // Show loading state
+            const submitBtn = deleteForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Deleting...';
+            submitBtn.disabled = true;
+        });
+    }
+});
+</script>
 @endsection

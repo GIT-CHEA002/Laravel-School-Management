@@ -36,11 +36,13 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        // Force role to 'student' - prevent admin registration through public form
+        // Remove any potential role manipulation from request
+        $userData = $request->only(['name', 'email']);
+        $userData['password'] = Hash::make($request->password);
+        $userData['role'] = 'student'; // Only allow registration as student, never admin
+
+        $user = User::create($userData);
 
         event(new Registered($user));
 

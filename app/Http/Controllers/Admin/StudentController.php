@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class StudentController extends Controller
 {
@@ -170,12 +171,25 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        DB::transaction(function () use ($student) {
-            $student->user->delete();
-            $student->delete();
-        });
+        try {
+            DB::transaction(function () use ($student) {
+                // Check if student has related data that might prevent deletion
+                if ($student->user) {
+                    $student->user->delete();
+                }
+                
+                // Delete the student record
+                $student->delete();
+            });
 
-        return redirect()->route('admin.students.index')
-            ->with('success', 'Student deleted successfully.');
+            return redirect()->route('admin.students.index')
+                ->with('success', 'Student deleted successfully.');
+                
+        } catch (\Exception $e) {
+            \Log::error('Error deleting student: ' . $e->getMessage());
+            
+            return redirect()->route('admin.students.index')
+                ->with('error', 'Failed to delete student. Please try again or contact support if the problem persists.');
+        }
     }
 }

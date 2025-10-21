@@ -10,48 +10,7 @@
             <small class="text-muted">Dashboard Overview</small>
         </div>
     </div>
-    
-    <div class="d-flex align-items-center">
-        <!-- Notifications -->
-        <div class="notification-icon me-3">
-            <button class="btn btn-light position-relative">
-                <i class="fas fa-bell"></i>
-                @if(isset($noticesCount) && $noticesCount > 0)
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        {{ $noticesCount }}
-                        <span class="visually-hidden">new notices</span>
-                    </span>
-                @endif
-            </button>
-        </div>
-        
-        <!-- Profile Icon -->
-        @auth
-            <div class="dropdown">
-                <button class="btn btn-light dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown">
-                    <div class="user-avatar me-2">
-                        <i class="fas fa-user-circle"></i>
-                    </div>
-                    <div class="text-start">
-                        <div class="fw-bold">{{ Auth::user()->name }}</div>
-                        <small class="text-muted">{{ ucfirst(Auth::user()->role) }}</small>
-                    </div>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="fas fa-user-cog me-2"></i>Profile</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
-                        <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                            @csrf
-                            <button type="submit" class="dropdown-item">
-                                <i class="fas fa-sign-out-alt me-2"></i> Logout
-                            </button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-        @endauth
-    </div>
+
 </div>
 
     <!-- Content Area -->
@@ -140,10 +99,11 @@
                             {{ $selectedClass ? $selectedClass->class_name : 'Select Class' }} <i class="fas fa-caret-down"></i>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">All Classes</a></li>
+                            <li><a class="dropdown-item {{ !request('class_id') ? 'active' : '' }}" href="{{ route('admin.dashboard', collect(request()->query())->except('class_id')->toArray()) }}">All Classes</a></li>
                             @foreach($classes ?? [] as $class)
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('admin.dashboard', ['class_id' => $class->id]) }}">
+                                    <a class="dropdown-item {{ request('class_id') == $class->id ? 'active' : '' }}"
+                                       href="{{ route('admin.dashboard', array_merge(request()->query(), ['class_id' => $class->id])) }}">
                                         {{ $class->class_name }}
                                     </a>
                                 </li>
@@ -219,7 +179,7 @@
                                 <div class="award-title">{{ $notice->title }}</div>
                                 <div class="award-description">
                                     {{ Str::limit($notice->content, 100) }}
-                                    <br><small class="text-muted">By {{ $notice->creator->name }} • {{ $notice->created_at->diffForHumans() }}</small>
+                                    <br><small class="text-muted">By {{ $notice->creator->name ?? 'Unknown' }} • {{ $notice->created_at->diffForHumans() }}</small>
                                 </div>
                             </div>
                         @empty
@@ -283,21 +243,30 @@
                 </form>
             </div>
             <div class="chart-container">
-                <div style="height: 200px; display: flex; align-items: flex-end; justify-content: space-between; padding: 20px;">
-                    @foreach($chartData ?? [] as $data)
-                        <div style="display: flex; flex-direction: column; align-items: center; flex: 1;">
-                            <div style="display: flex; flex-direction: column; align-items: flex-end; height: 160px; justify-content: flex-end;">
-                                @if($data['present'] > 0 || $data['absent'] > 0)
-                                    <div style="width: 40px; background-color: #4cc9f0; height: {{ max(10, $data['present_percentage'] * 1.5) }}px; margin-bottom: 2px; border-radius: 2px 2px 0 0;" title="Present: {{ $data['present'] }}"></div>
-                                    <div style="width: 40px; background-color: #f72585; height: {{ max(5, $data['absent_percentage'] * 1.5) }}px; margin-bottom: 5px; border-radius: 0 0 2px 2px;" title="Absent: {{ $data['absent'] }}"></div>
-                                @else
-                                    <div style="width: 40px; height: 10px; margin-bottom: 5px; background-color: #e9ecef; border-radius: 2px;" title="No data"></div>
-                                @endif
+                @if(!empty($chartData) && count($chartData) > 0)
+                    <div style="height: 200px; display: flex; align-items: flex-end; justify-content: space-between; padding: 20px;">
+                        @foreach($chartData as $data)
+                            <div style="display: flex; flex-direction: column; align-items: center; flex: 1;">
+                                <div style="display: flex; flex-direction: column; align-items: flex-end; height: 160px; justify-content: flex-end;">
+                                    @if($data['present'] > 0 || $data['absent'] > 0)
+                                        <div style="width: 40px; background-color: #4cc9f0; height: {{ max(10, $data['present_percentage'] * 1.5) }}px; margin-bottom: 2px; border-radius: 2px 2px 0 0;" title="Present: {{ $data['present'] }}"></div>
+                                        <div style="width: 40px; background-color: #f72585; height: {{ max(5, $data['absent_percentage'] * 1.5) }}px; margin-bottom: 5px; border-radius: 0 0 2px 2px;" title="Absent: {{ $data['absent'] }}"></div>
+                                    @else
+                                        <div style="width: 40px; height: 10px; margin-bottom: 5px; background-color: #e9ecef; border-radius: 2px;" title="No data"></div>
+                                    @endif
+                                </div>
+                                <small style="font-size: 11px; color: #6c757d; margin-top: 5px;">{{ $data['date'] }}</small>
                             </div>
-                            <small style="font-size: 11px; color: #6c757d; margin-top: 5px;">{{ $data['date'] }}</small>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="text-center py-4" style="height: 200px; display: flex; align-items: center; justify-content: center;">
+                        <div>
+                            <i class="fas fa-chart-area fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No attendance data available for {{ ucfirst($period) }} period.</p>
                         </div>
-                    @endforeach
-                </div>
+                    </div>
+                @endif
             </div>
             <div class="attendance-legend">
                 <div class="legend-item">
